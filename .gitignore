@@ -1,0 +1,16 @@
+#仮想環境
+venv/
+
+#pythonキャッシュ
+__pycache__/
+*.py[cod]
+*.pyo
+
+#データベース
+.sqlite3
+
+#エディタ設定
+.vscode/
+
+#環境変数などの秘密情報
+.env
