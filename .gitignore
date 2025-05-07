@@ -1,16 +1,31 @@
-#仮想環境
+# 仮想環境
 venv/
 
-#pythonキャッシュ
+# Python キャッシュ
 __pycache__/
 *.py[cod]
 *.pyo
 
-#データベース
-.sqlite3
+# DBファイル（SQLite）
+*.sqlite3
 
-#エディタ設定
+# VSCode 設定
 .vscode/
 
-#環境変数などの秘密情報
+# 環境変数や秘密情報
 .env
+
+# Macのゴミファイル
+.DS_Store
+
+# Node_modules（Next.jsの方で必要！）
+node_modules/
+
+# npm/yarn/lockファイルの競合を防ぐ（必要に応じて）
+package-lock.json
+yarn.lock
+
+# 出力ファイルやログ（必要に応じて）
+dist/
+build/
+*.log

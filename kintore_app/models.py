@@ -15,4 +15,4 @@ class TrainingSet(models.Model):
   
   
   def __str__(self):
-    return f"{self.date} - {self.exercise}"
+    return f"{self.training_log.date} - {self.training_log.exercise} : {self.weight}kg x {self.reps}回 x {self.sets}セット"
