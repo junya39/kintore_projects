@@ -1,28 +1,22 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, Button, ScrollView } from 'react-native';
+import { useLocalSearchParams } from 'expo-router';
 
 export default function RecordScreen() {
-  const today = new Date().toISOString().split('T')[0]; // 例: 2025-06-09
+  const { date } = useLocalSearchParams<{ date: string }>();
   const [sets, setSets] = useState([{ weight: '', reps: '', memo: '' }]);
 
-  const addSet = () => {
-    setSets([...sets, { weight: '', reps: '', memo: '' }]);
-  };
-
-  const handleSave = () => {
-    console.log('保存するデータ:', sets);
-    // あとでAPI送信やローカル保存に繋げられるように
-  };
+  const addSet = () => setSets([...sets, { weight: '', reps: '', memo: '' }]);
+  const handleSave = () => console.log('保存データ:', sets);
 
   return (
     <ScrollView contentContainerStyle={{ padding: 20 }}>
-      <Text style={{ fontSize: 18, marginBottom: 8 }}>{today}</Text>
+      <Text style={{ fontSize: 18, marginBottom: 8 }}>{date}</Text>
       <Text style={{ fontSize: 22, fontWeight: 'bold', marginBottom: 16 }}>ベンチプレス</Text>
 
       {sets.map((set, index) => (
         <View key={index} style={{ marginBottom: 16 }}>
-          <Text style={{ fontWeight: 'bold' }}>セット {index + 1}</Text>
-
+          <Text>セット {index + 1}</Text>
           <TextInput
             placeholder="重量 (kg)"
             keyboardType="numeric"
@@ -32,9 +26,8 @@ export default function RecordScreen() {
               updated[index].weight = text;
               setSets(updated);
             }}
-            style={{ borderWidth: 1, marginBottom: 8, padding: 6, borderRadius: 4 }}
+            style={{ borderWidth: 1, padding: 6, borderRadius: 4, marginBottom: 6 }}
           />
-
           <TextInput
             placeholder="回数 (reps)"
             keyboardType="numeric"
@@ -44,9 +37,8 @@ export default function RecordScreen() {
               updated[index].reps = text;
               setSets(updated);
             }}
-            style={{ borderWidth: 1, marginBottom: 8, padding: 6, borderRadius: 4 }}
+            style={{ borderWidth: 1, padding: 6, borderRadius: 4, marginBottom: 6 }}
           />
-
           <TextInput
             placeholder="メモ"
             value={set.memo}

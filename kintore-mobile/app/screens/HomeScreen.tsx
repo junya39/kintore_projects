@@ -1,29 +1,14 @@
-import React , {useEffect, useState} from 'react';
-import {View, Text, Button, Image} from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { View, Text, Button, Image } from 'react-native';
 import * as Font from 'expo-font';
 import { Calendar } from 'react-native-calendars';
-import { useNavigation } from '@react-navigation/native';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import {useRouter } from 'expo-router';
-
-
-type RootStackParamList = {
-  Home: undefined;
-  Record: undefined;
-};
-
-type NavigationProp = NativeStackNavigationProp<RootStackParamList, 'Home'>;
+import { useRouter } from 'expo-router';
 
 export default function HomeScreen() {
-  const navigation = useNavigation<NavigationProp>();
-
   const [fontLoaded, setFontLoaded] = useState(false);
-  const [count, setCount] = useState(0);
   const [selectedParts, setSelectedParts] = useState<string[]>([]);
-
-  const bodyParts = ['脚','背中','腕','肩','腹'];
   const today = new Date().toISOString().split('T')[0];
-  
+  const [selectedDate, setSelectedDate] = useState(today);
   const router = useRouter();
 
   useEffect(() => {
@@ -32,78 +17,41 @@ export default function HomeScreen() {
     }).then(() => setFontLoaded(true));
   }, []);
 
+  if (!fontLoaded) return <Text>Loading...</Text>;
+
   const togglePart = (part: string) => {
-    if (selectedParts.includes(part)) {
-      setSelectedParts(selectedParts.filter(p => p !== part));
-    } else {
-      setSelectedParts([...selectedParts, part]);
-    }
+    setSelectedParts(prev => prev.includes(part)
+      ? prev.filter(p => p !== part)
+      : [...prev, part]);
   };
 
-  if (!fontLoaded) {
-    return <Text>Loading...</Text>;
-  }
-
   return (
-    <View style={{ flex:1, justifyContent: 'center', alignItems: 'center' , padding:16 }}>
-      <Text style={{
-        fontFamily: 'Bungee',
-        fontSize: 32,
-        color: '#f97316',
-        textShadowColor: '#000',
-        textShadowOffset: {width:2, height:3},
-        textShadowRadius: 1,
-        marginBottom: 24
-      }}>
-        Workout App
-      </Text>
+    <View style={{ flex:1, justifyContent: 'center', alignItems: 'center', padding:16 }}>
+      <Text style={{ fontFamily: 'Bungee', fontSize: 32, color: '#f97316', textShadowColor: '#000', textShadowOffset: {width:2, height:3}, textShadowRadius: 1, marginBottom: 24 }}>Workout App</Text>
 
       <Calendar
         current={today}
-        markedDates={{
-          [today]: { selected: true, selectedColor: '#f97316' },
-        }}
-        style={{ marginBottom:24, borderRadius:10 }}
+        markedDates={{ [selectedDate]: { selected: true, selectedColor: '#f97316' } }}
+        onDayPress={(day) => setSelectedDate(day.dateString)}
       />
 
-      <Image source={require('../../assets/images/avater.png')}
-        style={{
-          width: 100,
-          height: 100,
-          borderRadius: 50,
-          marginBottom:12,
-        }}
-      />
+      <Image source={require('../../assets/images/avater.png')} style={{ width: 100, height: 100, borderRadius: 50, marginBottom:12 }} />
 
-      <Text style={{ fontSize:18, fontWeight: 'bold', marginBottom: 24}}>
-        JUNYA
-      </Text>
+      <Text style={{ fontSize:18, fontWeight: 'bold', marginBottom: 24 }}>JUNYA</Text>
 
-      <View style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'center', marginTop: 24}}>
-        {bodyParts.map((part) => (
+      <View style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'center', marginTop: 24 }}>
+        {['脚','背中','腕','肩','腹'].map(part => (
           <Text
             key={part}
-            onPress={() =>togglePart(part)}
-            style={{
-              paddingVertical: 8,
-              paddingHorizontal: 16,
-              margin: 6,
-              borderRadius: 20,
-              borderWidth: 1,
-              borderColor: selectedParts.includes(part) ? '#f97316' : '#ccc',
-              backgroundColor: selectedParts.includes(part) ? '#f97316' : '#fff',
-              color: selectedParts.includes(part) ? '#fff' : '#000',
-            }}
+            onPress={() => togglePart(part)}
+            style={{ paddingVertical: 8, paddingHorizontal: 16, margin: 6, borderRadius: 20, borderWidth: 1, borderColor: selectedParts.includes(part) ? '#f97316' : '#ccc', backgroundColor: selectedParts.includes(part) ? '#f97316' : '#fff', color: selectedParts.includes(part) ? '#fff' : '#000' }}
           >
             {part}
           </Text>
         ))}
       </View>
 
-      <Button
-        title="本日のトレーニングを追加"
-        onPress={() => router.push('/screens/RecordScreen')}
-      />
+      <Button title="本日のトレーニングを追加" onPress={() => router.push({ pathname: '/Record', params: { date: selectedDate } })} color="#f97316" />
     </View>
   );
 }
